@@ -99,3 +99,4 @@ npm run start
 - Keep secret keys out of source control; use the `.env` file and secret managers for production.
 - Use the `src/validations` helpers to validate incoming requests and return consistent API error responses.
 - Thêm nhánh 1
+- Nhánh 2
