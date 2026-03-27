@@ -113,10 +113,10 @@ const login = async (reqBody) => {
   }
 };
 
-const refreshToken = async (clientRefreshToken) => {
+const refreshToken = async (refreshToken) => {
   try {
     const refreshTokenDecoded = await JwtProvider.verifyToken(
-      clientRefreshToken,
+      refreshToken,
       env.REFRESH_TOKEN_SECRET_SIGNATURE
     );
 
