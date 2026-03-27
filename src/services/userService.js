@@ -75,43 +75,64 @@ const verifyAccount = async (reqBody) => {
   }
 };
 
-const login = async (reqBody) => {
-  try {
-    const existingUser = await userModel.findOneByEmail(reqBody.email);
-    if (!existingUser) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "Account not found!!!");
-    }
+// const login = async (reqBody) => {
+//   try {
+//     const existingUser = await userModel.findOneByEmail(reqBody.email);
+//     if (!existingUser) {
+//       throw new ApiError(StatusCodes.NOT_FOUND, "Account not found!!!");
+//     }
 
-    const matchPassword = bcryptjs.compareSync(
-      reqBody.password,
-      existingUser.password
-    );
-    if (!matchPassword) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, "Password not match!!!");
-    }
+//     const matchPassword = bcryptjs.compareSync(
+//       reqBody.password,
+//       existingUser.password
+//     );
+//     if (!matchPassword) {
+//       throw new ApiError(StatusCodes.UNAUTHORIZED, "Password not match!!!");
+//     }
 
-    const userInfo = {
-      _id: existingUser._id,
-      email: existingUser.email,
-    };
+//     const userInfo = {
+//       _id: existingUser._id,
+//       email: existingUser.email,
+//     };
 
-    const accessToken = await JwtProvider.generateToken(
-      userInfo,
-      env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      env.ACCESS_TOKEN_LIFE
-    );
+//     const accessToken = await JwtProvider.generateToken(
+//       userInfo,
+//       env.ACCESS_TOKEN_SECRET_SIGNATURE,
+//       env.ACCESS_TOKEN_LIFE
+//     );
 
-    const refreshToken = await JwtProvider.generateToken(
-      userInfo,
-      env.REFRESH_TOKEN_SECRET_SIGNATURE,
-      env.REFRESH_TOKEN_LIFE
-    );
+//     const refreshToken = await JwtProvider.generateToken(
+//       userInfo,
+//       env.REFRESH_TOKEN_SECRET_SIGNATURE,
+//       env.REFRESH_TOKEN_LIFE
+//     );
 
-    return { accessToken, refreshToken, ...pickUser(existingUser) };
-  } catch (error) {
-    throw error;
-  }
-};
+//     return { accessToken, refreshToken, ...pickUser(existingUser) };
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+const login=async(rq)=>{
+try{
+const a=await userModel.findOneByEmail(rq.email)
+if(!a){
+throw new ApiError(StatusCodes.NOT_FOUND,"not found")
+}
+
+const x=bcryptjs.compareSync(rq.password,a.password)
+if(x==false){
+throw new ApiError(StatusCodes.UNAUTHORIZED,"sai mk")
+}
+
+const data={id:a._id,mail:a.email}
+
+const t1=await JwtProvider.generateToken(data,env.ACCESS_TOKEN_SECRET_SIGNATURE,env.ACCESS_TOKEN_LIFE)
+const t2=await JwtProvider.generateToken(data,env.REFRESH_TOKEN_SECRET_SIGNATURE,env.REFRESH_TOKEN_LIFE)
+
+return{t1:t1,t2:t2,...pickUser(a)}
+}catch(e){throw e}
+}
 
 const refreshToken = async (clientRefreshToken) => {
   try {
