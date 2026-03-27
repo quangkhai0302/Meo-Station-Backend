@@ -113,7 +113,7 @@ const login = async (reqBody) => {
   }
 };
 
-const refreshToken = async (clientRefreshToken) => {
+const refreshToken = async (tokenFromClient) => {
   try {
     const refreshTokenDecoded = await JwtProvider.verifyToken(
       clientRefreshToken,
