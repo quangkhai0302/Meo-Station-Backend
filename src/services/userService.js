@@ -134,28 +134,24 @@ return{t1:t1,t2:t2,...pickUser(a)}
 }catch(e){throw e}
 }
 
-const refreshToken = async (clientRefreshToken) => {
-  try {
-    const refreshTokenDecoded = await JwtProvider.verifyToken(
-      clientRefreshToken,
-      env.REFRESH_TOKEN_SECRET_SIGNATURE
-    );
+const refreshToken = async (refreshToken) => {
+  const decoded = await JwtProvider.verifyToken(
+    refreshToken,
+    env.REFRESH_TOKEN_SECRET_SIGNATURE
+  );
 
-    const userInfo = {
-      _id: refreshTokenDecoded._id,
-      email: refreshTokenDecoded.email,
-    };
+  const userPayload = {
+    _id: decoded._id,
+    email: decoded.email
+  };
 
-    const accessToken = await JwtProvider.generateToken(
-      userInfo,
-      env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      env.ACCESS_TOKEN_LIFE
-    );
+  const newAccessToken = await JwtProvider.generateToken(
+    userPayload,
+    env.ACCESS_TOKEN_SECRET_SIGNATURE,
+    env.ACCESS_TOKEN_LIFE
+  );
 
-    return { accessToken };
-  } catch (error) {
-    throw error;
-  }
+  return { accessToken: newAccessToken };
 };
 
 const update = async (userId, reqBody, userAvatarFile) => {
